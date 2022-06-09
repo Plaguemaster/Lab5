@@ -1,28 +1,23 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.4)
+
 SET(COVERAGE OFF CACHE BOOL "Coverage")
+SET(CMAKE_CXX_COMPILER "/usr/bin/g++")
 
-project(tests)
-set(CMAKE_CXX_STANDART 17)
+project(TestRunning)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletests)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/third-party/gtest" "gtest")
 
-add_executable(${PROJECT_NAME} tests.cpp)
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/gtest/gmock gmock)
 
-if(COVERAGE)
-        target_compile_options(${PROJECT_NAME} PRIVATE --coverage)
-        target_link_libraries(${PROJECT_NAME} PRIVATE banking --coverage)
-else()
-        target_link_libraries(${PROJECT_NAME} PRIVATE banking -mno-default)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/banking)
+
+add_executable(RunTest ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp)
+
+if (COVERAGE)
+    target_compile_options(RunTest PRIVATE --coverage)
+    target_link_libraries(RunTest PRIVATE --coverage)
 endif()
 
-add_library(banking STATIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/banking/Account.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/banking/Transaction.cpp
-)
+target_include_directories(RunTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/banking)
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-                      ${CMAKE_CURRENT_SOURCE_DIR}/banking
-                      ${CMAKE_CURRENT_SOURCE_DIR}/googletests
-                      )
-	      
-target_link_libraries(${PROJECT_NAME} PRIVATE gtest gtest_main gmock_main -mno-default)
+target_link_libraries(RunTest PRIVATE gtest gtest_main gmock_main banking)
