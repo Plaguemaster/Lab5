@@ -1,9 +1,7 @@
 name: Banking
 
 on:
-  push:
-      branches: 
-      - Master
+  [push] 
       
 jobs:
 
