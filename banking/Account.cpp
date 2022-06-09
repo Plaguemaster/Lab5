@@ -20,3 +20,5 @@ void Account::Lock() {
 }
 
 void Account::Unlock() { is_locked_ = false; }
+
+void Account::Unlock() { is_locked_ = false; }
